@@ -1,0 +1,35 @@
+#!/usr/bin/python3
+
+with open("marx.txt", 'r') as f:
+    marx_head = f.readlines()
+
+
+def printInOrder(aList):
+    for li in aList:
+        print(li, end="")
+
+# let the max width to 20 character
+# if with the -zh flag then it's about 10
+def generateMatrix2PlugIn(words, zh_flag=False):
+    result_array = []
+    length = len(words)
+    if zh_flag: 
+        rows_count = length // 10 + 1
+        columns_count = 10
+    else:
+        rows_count = length // 20 + 1
+        columns_count = 20
+
+    for i in range(rows_count):
+        if i == rows_count-1:
+            result_array.append(words[i*columns_count:])
+        else:
+            result_array.append(words[i*columns_count:(i+1)*columns_count])
+    return result_array
+
+
+def plugInMarx(aMatrix):
+    pass
+
+
+print(generateMatrix2PlugIn(input("Input: ")))
