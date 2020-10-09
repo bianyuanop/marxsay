@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import sys
 
 with open("marx.txt", 'r') as f:
     marx_head = f.readlines()
@@ -16,20 +17,56 @@ def generateMatrix2PlugIn(words, zh_flag=False):
     if zh_flag: 
         rows_count = length // 10 + 1
         columns_count = 10
+        head_and_tail = "--------------\n"
     else:
         rows_count = length // 20 + 1
         columns_count = 20
+        head_and_tail = "------------------------\n"
 
     for i in range(rows_count):
         if i == rows_count-1:
             result_array.append(words[i*columns_count:])
         else:
             result_array.append(words[i*columns_count:(i+1)*columns_count])
+
+    for i in range(len(result_array)):
+        if i == len(result_array) - 1:
+            result_array[i] = '| ' + result_array[i] + ' '*(20 - len(result_array[i])) + ' |\n'
+            continue
+        result_array[i] = '| ' + result_array[i] + ' |\n'
+
+    result_array.insert(0, head_and_tail)
+    result_array.append(head_and_tail)
+    
     return result_array
 
+def plugIn(faceArray, plugArray):
+    plugArrayLen = len(plugArray) 
+    startPlugRow = 11 - plugArrayLen//2 - 1
 
-def plugInMarx(aMatrix):
-    pass
+    for i in range(startPlugRow, plugArrayLen + startPlugRow):
+        if i < 18:
+            faceArray[i] = faceArray[i].strip('\n')
+            faceArray[i] += plugArray[i - startPlugRow]
+        else:
+            faceArray.append(plugArray[i])
 
+    return faceArray
 
-print(generateMatrix2PlugIn(input("Input: ")))
+if __name__ == '__main__':
+    if len(sys.argv) >= 2:
+        if sys.argv[0] != "-zh":
+            toSay = ""   
+            for i in range(1, len(sys.argv)):
+                toSay += sys.argv[i] + " " 
+        
+            print("".join(plugIn(marx_head, generateMatrix2PlugIn(toSay))))
+
+        else:
+            toSay = "" 
+            for i in range(2, len(sys.argv)):
+                toSay += sys.argv[i] + " " 
+
+            print("".join(plugIn(marx_head, generateMatrix2PlugIn(toSay, True))))
+    else:
+        print("".join(plugIn(marx_head, generateMatrix2PlugIn("Die internationale"))))
